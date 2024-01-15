@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Logger Test</title>
+  </head>
+  <body>
+    <div>
+      <textarea
+        id="textEventSource"
+        placeholder="Everything you write here will be logged..."
+        type="text"
+      ></textarea>
+    </div>
+
+    <div>
+      <button id="clickEventSource">
+        Everytime you click on this button will be logged...
+      </button>
+    </div>
+
+    <script>
+      function sendEvent(event_type, timestamp, user_id, payload, url) {
+        const request = new XMLHttpRequest();
+        request.open('POST', url);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(
+          JSON.stringify({
+            timestamp,
+            payload,
+            user_id,
+            event_type,
+          })
+        );
+      }
+
+      const textEventSource = document.getElementById('textEventSource');
+      const clickEventSource = document.getElementById('clickEventSource');
+
+      textEventSource.addEventListener('keyup', (event) => {
+        const now = new Date();
+        const timestamp = now.toISOString();
+
+        const payload = event.key;
+        const user_id = null;
+        const event_type = 'KEYUP_EVENT';
+
+        sendEvent(
+          event_type,
+          timestamp,
+          user_id,
+          payload,
+          'http://localhost:8000/log-event'
+        );
+      });
+
+      clickEventSource.addEventListener('click', (event) => {
+        const now = new Date();
+        const timestamp = now.toISOString();
+
+        const payload = event.key;
+        const user_id = null;
+        const event_type = 'CLICK_EVENT';
+
+        sendEvent(
+          event_type,
+          timestamp,
+          user_id,
+          payload,
+          'http://localhost:8000/log-event'
+        );
+      });
+    </script>
+  </body>
+</html>
